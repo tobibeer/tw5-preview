@@ -1,0 +1,10 @@
+created: 20160113211423872
+creator: Tobias Beer
+modified: 20160114013957588
+modifier: Tobias Beer
+title: preview-Configure
+type: text/vnd.tiddlywiki
+
+The plugin provides the following global configuration tiddlers which you also find in the plugin listing for <<tb preview>> in the [[ControlPanel|$:/ControlPanel]] of your wiki:
+
+{{$:/plugins/tobibeer/preview/config}}

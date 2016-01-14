@@ -1,0 +1,18 @@
+created: 20160113211354480
+creator: Tobias Beer
+modified: 20160114020017370
+modifier: Tobias Beer
+title: preview-Info
+type: text/vnd.tiddlywiki
+
+{{preview-Dependencies}}
+
+The plugin $:/plugins/tobibeer/preview enhances the core <<x LinkWidget>> to display a preview of tiddlers when hovering an internal link.
+
+* link preview popups can even be nested a few levels
+* you can define a ''delay'' or keyboard modifier ''keys'' in the [[configuration|preview-Configure]]
+** or exclude elements cia css ''classes'' or titles using an ''exclude'' filter
+** and make preview popups "sticky" using the class `tc-popup-keep`
+* design a custom [[template|preview-Configure]] or use custom [[styles|preview-Styles]] via css
+
+<<plugin-docs-cp preview>>

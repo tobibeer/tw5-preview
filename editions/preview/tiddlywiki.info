@@ -1,0 +1,22 @@
+{
+    "description": "tobibeer/preview plugin",
+    "plugins": [
+        "tiddlywiki/tiddlyweb",
+        "tiddlywiki/filesystem",
+        "tobibeer/appear",
+        "tobibeer/preview"
+    ],
+    "themes": [
+        "tiddlywiki/vanilla",
+        "tiddlywiki/snowwhite"
+    ],
+    "includeWikis": [
+        "../../../defaults/editions/defaults"
+    ],
+    "build": {
+        "index": [
+            "--output","../../",
+            "--rendertiddler","$:/plugins/tiddlywiki/tiddlyweb/save/offline","index.html","text/plain"
+        ]
+    }
+}

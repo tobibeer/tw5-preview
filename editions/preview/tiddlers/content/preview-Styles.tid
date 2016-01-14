@@ -1,0 +1,21 @@
+created: 20160114002008644
+creator: Tobias Beer
+modified: 20160114003941598
+modifier: Tobias Beer
+tags: 
+title: preview-Styles
+type: text/vnd.tiddlywiki
+
+The following classes are set to by <<tb preview>>:
+
+; for internal links:
+: `tc-popup-handle` — indicates the link is a popup handle
+: `tc-popup-absolute` — to calculate the popup position absolutely
+; for the popup:
+: `tc-popup-keep` — makes the popups sticky (via [[defaults/class|preview-Configure]])
+: `tc-popup` — standard popup class
+: `appear appear-block` — appear widget styles
+: `tc-preview-tiddler tc-preview-tiddler-<level>` — mark popup as preview
+The default styles for <<tb preview>> are defined in <<source "$:/plugins/tobibeer/preview/styles">>
+
+Some styles by <<tb appear>> also apply as defined in <<source "$:/plugins/tobibeer/appear/styles">>

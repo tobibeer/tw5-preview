@@ -1,0 +1,10 @@
+/*\
+title: $:/plugins/tobibeer/preview/startup.js
+type: application/javascript
+module-type: startup
+
+Enhances the link widget for on-hover previews
+
+@preserve
+\*/
+(function(){"use strict";var e=require("$:/core/modules/widgets/link.js").link,t=e.prototype.render,i=e.prototype.handleClickEvent,o=require("$:/core/modules/utils/dom/popup.js").Popup,p=o.prototype.popupInfo;e.prototype.render=function(){t.apply(this,arguments);var e,i=this,o=this.wiki,p=this.domNodes[0],r=o.getTiddler(i.to),u="$:/plugins/tobibeer/preview/defaults/",s=$tw.utils.parseKeyDescriptor(o.getTextReference(u+"keys","").toUpperCase()),n=o.getTextReference(u+"delay","").toUpperCase(),l=function(){var t=$tw.popup.popupInfo(p).popupLevel;clearTimeout(e);$tw.popup.cancel(t-1);t++;o.setText("$:/temp/tobibeer/preview-"+t+"-tiddler","text",null,i.to);setTimeout(function(){$tw.popup.triggerPopup({domNode:p,title:"$:/temp/tobibeer/preview-"+t,wiki:o})},50)},a=function(){var e,t,r=1,s=o.getTextReference(u+"not","");if(s){$tw.utils.each(s.split(" "),function(e){var t=p;while(t&&r){if($tw.utils.hasClass(t,e)){r=0;return false}t=t.parentNode}})}t=o.getTextReference(u+"exclude","");e=t?o.filterTiddlers(t):[];if(e.indexOf(i.to)>=0){r=0}return r};n=n?parseInt(n):null;if(n!==null&&isNaN(n)){n=0}if(r){$tw.utils.addClass(p,"tc-popup-handle");$tw.utils.addClass(p,"tc-popup-absolute");["mouseover","mouseout"].forEach(function(t){p.addEventListener(t,function(i){var o=i||window.event;if(t==="mouseover"){if(a()){if($tw.utils.checkKeyDescriptor(o,s)){l()}else if(n){e=setTimeout(l,n);p.delayTimeout=e}}}else{clearTimeout(e)}})})}};e.prototype.handleClickEvent=function(){i.apply(this,arguments);clearTimeout(this.delayTimeout)};o.prototype.popupInfo=function(e){var t,i,o=e;while(o&&o.getAttribute){t=o.getAttribute("class")||"";i=t.indexOf("tc-preview-tiddler-");if(i>-1){t=t.substr(i).split(" ")[0];return{popupLevel:parseInt(t.charAt(t.length-1))}}o=o.parentNode}return p.apply(this,arguments)}})();

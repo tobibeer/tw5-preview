@@ -1,0 +1,21 @@
+title: $:/plugins/tobibeer/preview/
+
+lingo/keys: modifier keys to trigger popup directly on-hover (alt, ctrl, shift, meta)
+defaults/keys: CTRL
+
+lingo/delay: delay popup for this many milliseconds
+defaults/delay: 1500
+
+lingo/class: css classes applied to the popup
+defaults/class: tc-popup-keep
+
+lingo/not: no preview for links inside elements with these classes
+defaults/not: tc-drop-down tc-sidebar-scrollable tc-topbar tc-tiddler-title
+
+lingo/exclude: no preview for links to tiddlers matching this filter
+defaults/exclude: [is[system]] [all[shadows]] [!has[text]]
+
+lingo/template: the preview template
+defaults/template: $:/plugins/tobibeer/preview/template
+
+lingo/open: view at ''<<WIKI>>''
