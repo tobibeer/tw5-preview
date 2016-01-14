@@ -40,7 +40,7 @@ CoreLink.prototype.render = function() {
 		// Modifier keys to quick-show the popup w/o delay
 		keys = $tw.utils.parseKeyDescriptor(wiki.getTextReference(defaults+"keys","").toUpperCase()),
 		// Delay for popup rendering
-		delay = wiki.getTextReference(defaults+"delay","").toUpperCase(),
+		delay = wiki.getTextReference(defaults+"delay").toUpperCase(),
 		// Displays the preview popup
 		showPopup = function() {
 			// Get current popup level
@@ -104,7 +104,7 @@ CoreLink.prototype.render = function() {
 			return yes;
 		};
 	// Turn delay to integer
-	delay = delay ? parseInt(delay) : null;
+	delay = delay !== undefined ? parseInt(delay) : null;
 	// Not a number?
 	if(delay !== null && isNaN(delay)) {
 		// No delay
@@ -136,7 +136,7 @@ CoreLink.prototype.render = function() {
 							// Then show
 							showPopup();
 						// Modifiers don't match but we got a delay?
-						} else if(delay) {
+						} else if(delay !== null) {
 							// Set timeout and wait to show popup
 							wait = setTimeout(showPopup,delay);
 							// Remember timer at element
