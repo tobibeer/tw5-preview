@@ -28,8 +28,7 @@ var
 CoreLink.prototype.render = function() {
 	// Run core handler
 	renderCore.apply(this,arguments);
-	var wait,
-		self = this,
+	var self = this,
 		wiki = this.wiki,
 		// The link node
 		el = this.domNodes[0],
@@ -46,7 +45,7 @@ CoreLink.prototype.render = function() {
 			// Get current popup level
 			var level = $tw.popup.popupInfo(el).popupLevel;
 			// Stop waiting for other popups to pop up
-			clearTimeout(wait);
+			clearTimeout(self.previewTimeout);
 			// Quite all of outer level
 			$tw.popup.cancel(level-1);
 			// Level up
@@ -138,15 +137,13 @@ CoreLink.prototype.render = function() {
 						// Modifiers don't match but we got a delay?
 						} else if(delay !== null) {
 							// Set timeout and wait to show popup
-							wait = setTimeout(showPopup,delay);
-							// Remember timer at element
-							el.delayTimeout = wait;
+							self.previewTimeout = setTimeout(showPopup,delay);
 						}
 					}
 				// Mouseout
 				} else {
 					// No more waiting for the popup
-					clearTimeout(wait);
+					clearTimeout(self.previewTimeout);
 				}
 			});
 		});
@@ -158,7 +155,7 @@ CoreLink.prototype.handleClickEvent = function() {
 	// Run core handler
 	clickCore.apply(this,arguments);
 	// Abort popup delay timeout
-	clearTimeout(this.delayTimeout);
+	clearTimeout(this.previewTimeout);
 	// Close popups
 	$tw.popup.cancel(Math.max(0,$tw.popup.popupInfo(this).popupLevel-1));
 };
