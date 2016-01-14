@@ -1,6 +1,6 @@
 title: $:/plugins/tobibeer/preview/
 
-lingo/keys: modifier keys to trigger popup directly on-hover (alt, ctrl, shift, meta)
+lingo/keys: modifier keys to trigger popup directly on-hover (ctrl, alt+shift, meta, etc...)
 defaults/keys: CTRL
 
 lingo/delay: delay popup for this many milliseconds

@@ -126,6 +126,11 @@ CoreLink.prototype.render = function() {
 				if(e === "mouseover") {
 					// Actually showing anything?
 					if(show()) {
+						// No keycode?
+						if(!ev.keyCode) {
+							// Set to 0, for whatever reason the core expects one
+							ev.keyCode = 0;
+						}
 						// Modifier keys say we show directly?
 						if($tw.utils.checkKeyDescriptor(ev,keys)) {
 							// Then show
@@ -154,6 +159,8 @@ CoreLink.prototype.handleClickEvent = function() {
 	clickCore.apply(this,arguments);
 	// Abort popup delay timeout
 	clearTimeout(this.delayTimeout);
+	// Close popups
+	$tw.popup.cancel(Math.max(0,$tw.popup.popupInfo(this).popupLevel-1));
 };
 
 // Hijack popupInfo() of core Popup ($tw.popup)

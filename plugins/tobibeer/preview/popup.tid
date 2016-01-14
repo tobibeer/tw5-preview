@@ -12,7 +12,6 @@ tc-popup appear appear-block tc-preview-tiddler tc-preview-tiddler-$num$ $(defau
 \define level(num)
 <$reveal tag="div" type="popup" state=<<state $num$>> class=<<classes $num$>>>
 <$tiddler tiddler={{$:/temp/tobibeer/preview-$num$-tiddler}}>
-
 <$transclude tiddler={{$:/plugins/tobibeer/preview/defaults/template}} mode="block"/>
 </$tiddler>
 </$reveal>
