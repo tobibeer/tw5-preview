@@ -15,5 +15,6 @@ type: text/vnd.tiddlywiki
 : requires <<tb appear>> [[0.6.0|https://github.com/tobibeer/tw5-appear/releases/tag/0.6.0]]!
 : improved handling for nested popups
 : fixed keyboard support
+: fixed bug for iOS devices throwing js error
 ; 0.5.2 / 2016-01-14
 : initial version
