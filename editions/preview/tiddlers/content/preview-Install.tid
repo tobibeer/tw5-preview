@@ -1,6 +1,6 @@
 created: 20160114002002424
 creator: Tobias Beer
-modified: 20160118153930161
+modified: 20160120075234828
 modifier: Tobias Beer
 title: preview-Install
 type: text/vnd.tiddlywiki
@@ -11,7 +11,7 @@ type: text/vnd.tiddlywiki
 
 !! Version History
 
-; 0.5.5 / 2016-01-19
+; 0.5.5 / 2016-01-20
 : requires <<tb appear>> [[0.6.0|https://github.com/tobibeer/tw5-appear/releases/tag/0.6.0]]!
 : improved handling for nested popups
 : fixed keyboard support
