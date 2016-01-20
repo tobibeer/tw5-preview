@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/tobibeer/preview/startup.js
+title: $:/plugins/tobibeer/preview/link.js
 type: application/javascript
 module-type: startup
 
@@ -7,22 +7,19 @@ Enhances the link widget for on-hover previews
 
 @preserve
 \*/
-(function(){
-
 /*jslint node: true, browser: true */
 /*global $tw: false */
-"use strict";
+
+(function(){
 
 var
+	// Global flag to stop mouseover madness
+	block,
 	// Get core link widget
 	CoreLink = require("$:/core/modules/widgets/link.js").link,
 	// Store ref to render() and handleClickEvent()
 	renderCore = CoreLink.prototype.render,
-	clickCore = CoreLink.prototype.handleClickEvent,
-	// Get core popup
-	CorePopup =  require("$:/core/modules/utils/dom/popup.js").Popup,
-	// Store ref for popupInfo()
-	popupInfoCore = CorePopup.prototype.popupInfo;
+	clickCore = CoreLink.prototype.handleClickEvent;
 
 // Hijack core link widget render()
 CoreLink.prototype.render = function() {
@@ -36,38 +33,61 @@ CoreLink.prototype.render = function() {
 		to = wiki.getTiddler(self.to),
 		// Shortcut to defaults namespace
 		defaults = "$:/plugins/tobibeer/preview/defaults/",
+		// Shortcut to preview namespace
+		preview = "$:/temp/tobibeer/preview-",
 		// Modifier keys to quick-show the popup w/o delay
-		keys = $tw.utils.parseKeyDescriptor(wiki.getTextReference(defaults+"keys","").toUpperCase()),
+		keys = $tw.utils.parseKeyDescriptorTB(wiki.getTextReference(defaults+"keys","").toUpperCase()),
 		// Delay for popup rendering
 		delay = wiki.getTextReference(defaults+"delay").toUpperCase(),
+		//Check if popup already open
+		getInfo = function(el) {
+			// Get current popup level
+			var info = $tw.popup.popupInfo(el),
+				// Get current popup level
+				level = info.popupLevel;
+			return (
+				wiki.getTextReference(preview+level) &&
+				wiki.getTextReference(preview+level+"-tiddler") === self.to ?
+				null :
+				info
+			);
+		},
 		// Displays the preview popup
 		showPopup = function() {
-			// Get current popup level
-			var level = $tw.popup.popupInfo(el).popupLevel;
-			// Stop waiting for other popups to pop up
-			clearTimeout(self.previewTimeout);
-			// Quite all of outer level
-			$tw.popup.cancel(level-1);
-			// Level up
-			level++;
-			// Store reference to tiddler to be previewed for level
-			wiki.setText("$:/temp/tobibeer/preview-"+level+"-tiddler","text",null,self.to);
-			// Show popup with timeout, to get past nextTick
-			setTimeout(function() {
-				// Core popup triggering
-				$tw.popup.triggerPopup({
-					// For this tiddler
-					domNode: el,
-					// The state for this level
-					title: "$:/temp/tobibeer/preview-"+level,
-					wiki: wiki
-				});
-			},50);
+			var level,
+				// Get info (only if not open yet)
+				info = getInfo(el);
+			// Not open yet and not yet blocking mouseover madness?
+			if(info) {
+				// Get current popup level
+				level = info.popupLevel;
+				// Stop waiting for other popups to pop up
+				clearTimeout(self.previewTimeout);
+				// Quite all of outer level
+				$tw.popup.cancel(level);
+				// Level up
+				level++;
+				// Store reference to tiddler to be previewed for level
+				wiki.setText(preview+level+"-tiddler","text",null,self.to);
+				// Show popup with timeout, to get past nextTick
+				setTimeout(function() {
+					// Core popup triggering
+					$tw.popup.triggerPopup({
+						// For this tiddler
+						domNode: el,
+						// The state for this level
+						title: preview+level,
+						wiki: wiki
+					});
+					block = 0;
+				},50);
+			}
 		},
-		// A helper to determine whether or not to actually show the popu
+		// A helper to determine whether or not to actually show the popup
 		show = function (){
 			var ex,exclude,
-				yes = 1,
+				// By default, show
+				doShow = 1,
 				// The css classes in which not to display previews for links
 				not = wiki.getTextReference(defaults+"not","");
 			// Got any?
@@ -77,12 +97,12 @@ CoreLink.prototype.render = function() {
 					// This node
 					var node = el;
 					// Loop so long as parent-nodes and still displaying
-					while(node && yes) {
+					while(node && doShow) {
 						// Node has exclude-class?
 						if($tw.utils.hasClass(node,n)){
-							// Remember
-							yes = 0;
-							// Abort
+							// Ok, so we're not showing
+							doShow = 0;
+							// Stop iterating
 							return false;
 						}
 						// Next partent
@@ -90,17 +110,20 @@ CoreLink.prototype.render = function() {
 					}
 				});
 			}
-			// Not aborted yet? => get exclude filter
-			exclude = wiki.getTextReference(defaults+"exclude","");
-			// Fetch excluded titles
-			ex = exclude ? wiki.filterTiddlers(exclude) : [];
-			// Title in excludes?
-			if(ex.indexOf(self.to) >= 0) {
-				// Then don't display
-				yes = 0;
+			// Not aborted yet?
+			if(doShow) {
+				// get exclude filter
+				exclude = wiki.getTextReference(defaults+"exclude","");
+				// Fetch excluded titles
+				ex = exclude ? wiki.filterTiddlers(exclude) : [];
+				// Title in excludes?
+				if(ex.indexOf(self.to) >= 0) {
+					// Then don't display
+					doShow = 0;
+				}
 			}
 			// Return what we got
-			return yes;
+			return doShow;
 		};
 	// Turn delay to integer
 	delay = delay !== undefined ? parseInt(delay) : null;
@@ -131,17 +154,26 @@ CoreLink.prototype.render = function() {
 							ev.keyCode = 0;
 						}
 						// Modifier keys say we show directly?
-						if($tw.utils.checkKeyDescriptor(ev,keys)) {
-							// Then show
-							showPopup();
+						if($tw.utils.checkKeyDescriptorTB(ev,keys)) {
+							// Not yet blocking mousover madness?
+							if(!block) {
+								// Block further firing of mouseover events
+								block = 1;
+								// Then show
+								showPopup();
+							}
 						// Modifiers don't match but we got a delay?
 						} else if(delay !== null) {
+							// No more blocking of mouseover events
+							block = 0;
 							// Set timeout and wait to show popup
 							self.previewTimeout = setTimeout(showPopup,delay);
 						}
 					}
 				// Mouseout
 				} else {
+					// No more blocking of mouseover events
+					block = 0;
 					// No more waiting for the popup
 					clearTimeout(self.previewTimeout);
 				}
@@ -157,33 +189,12 @@ CoreLink.prototype.handleClickEvent = function() {
 	// Abort popup delay timeout
 	clearTimeout(this.previewTimeout);
 	// Close popups
-	$tw.popup.cancel(Math.max(0,$tw.popup.popupInfo(this).popupLevel-1));
-};
-
-// Hijack popupInfo() of core Popup ($tw.popup)
-CorePopup.prototype.popupInfo = function(domNode) {
-		var c,pos,
-		node = domNode;
-	// First check ancestors to see if we're within a popup handle
-	while(node && node.getAttribute) {
-		// Fetch class
-		c = node.getAttribute("class")||"";
-		// Find preview popup class
-		pos = c.indexOf("tc-preview-tiddler-");
-		// Found?
-		if(pos > -1) {
-			// Cut off at class, and fetch class
-			c = c.substr(pos).split(" ")[0];
-			return {
-				// Return popup level info
-				popupLevel: parseInt(c.charAt(c.length-1))
-			};
-		}
-		// Next parent
-		node = node.parentNode;
-	}
-	// No preview popup found? => fetch via core method
-	return popupInfoCore.apply(this,arguments);
+	$tw.popup.cancel(
+		Math.max(
+			0,
+			$tw.popup.popupInfo(this.domNodes[0]).popupLevel - 1
+		)
+	);
 };
 
 })();

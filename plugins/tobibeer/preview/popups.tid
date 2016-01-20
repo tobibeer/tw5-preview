@@ -1,4 +1,4 @@
-title: $:/plugins/tobibeer/preview/popup
+title: $:/plugins/tobibeer/preview/popups
 tags: $:/tags/PageTemplate
 
 \define state(num)
@@ -6,7 +6,7 @@ $:/temp/tobibeer/preview-$num$
 \end
 
 \define classes(num)
-tc-popup appear appear-block tc-preview-tiddler tc-preview-tiddler-$num$ $(default-classes)$
+tc-popup appear appear-block appear-reveal tc-preview-tiddler tc-preview-tiddler-$num$ $(default-classes)$
 \end
 
 \define level(num)
@@ -18,7 +18,7 @@ tc-popup appear appear-block tc-preview-tiddler tc-preview-tiddler-$num$ $(defau
 \end
 
 <$vars default-classes={{$:/plugins/tobibeer/preview/defaults/class}}>
-<$list filter="1 2 3 4 5 6 7">
+<$list filter="1 2 3 4 5 6 7 8 9">
 <$macrocall $name="level" num={{!!title}}/>
 </$list>
 </$vars>
