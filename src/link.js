@@ -69,18 +69,21 @@ CoreLink.prototype.render = function() {
 				level++;
 				// Store reference to tiddler to be previewed for level
 				wiki.setText(preview+level+"-tiddler","text",null,self.to);
-				// Show popup with timeout, to get past nextTick
-				setTimeout(function() {
-					// Core popup triggering
-					$tw.popup.triggerPopup({
-						// For this tiddler
-						domNode: el,
-						// The state for this level
-						title: preview+level,
-						wiki: wiki
-					});
-					block = 0;
-				},50);
+				// Store the popup details if not already there
+				if($tw.popup.findPopup(preview+level) === -1) {
+					// Show popup with timeout, to get past nextTick
+					setTimeout(function() {
+						// Core popup triggering
+						$tw.popup.triggerPopup({
+							// For this tiddler
+							domNode: el,
+							// The state for this level
+							title: preview+level,
+							wiki: wiki
+						});
+						block = 0;
+					},50);
+				}
 			}
 		},
 		// A helper to determine whether or not to actually show the popup
@@ -192,7 +195,7 @@ CoreLink.prototype.handleClickEvent = function() {
 	$tw.popup.cancel(
 		Math.max(
 			0,
-			$tw.popup.popupInfo(this.domNodes[0]).popupLevel - 1
+			$tw.popup.popupInfo(this.domNodes[0]).popupLevel
 		)
 	);
 };
